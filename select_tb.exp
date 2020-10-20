@@ -1,0 +1,12 @@
+#!/usr/bin/expect -f
+
+set filename "[lindex $argv]"
+#set now [timestamp -format %Y%m%d%H]
+#set now 2020091015
+set password iotDevice!@
+
+spawn mysql -u iotDevice -p IotDeviceInfo -e "SELECT mdn, gw_mac, rssi, dt into outfile '$filename' FIELDS TERMINATED BY ',' FROM T_APP_RAW_DATA WHERE DATE_FORMAT(dt, "%Y-%m-%d") = CURDATE()"
+expect "Enter password:"
+send "$password\n"
+sleep 1
+expect eof
