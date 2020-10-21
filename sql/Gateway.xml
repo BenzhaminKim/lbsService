@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.openit.serviceserver.biz.mapper.GatewayMapper">
+
+    <select id="selectAllGatewayList" resultType="com.openit.serviceserver.biz.domain.entity.Gateway" >
+        SELECT
+                  gw_mac as gwMac
+                , gw_name as gwName
+        FROM
+                T_GW_LOC
+    </select>
+
+    <insert id="insertAppRawData" parameterType="com.openit.serviceserver.biz.domain.entity.DataInfo">
+        INSERT INTO
+                      ${tableName} (
+                       mdn
+                      , gw_mac
+                      , rssi
+                      , dt
+                      , ins_dt
+                    ) VALUES
+                    <foreach collection="rawData" item="item" separator=",">
+                    (
+                        #{item.mdn}
+                      , #{item.repeatper_gw_mac}
+                      , #{item.rssi}
+                      , #{item.dt}
+                      , NOW()
+                    )
+                    </foreach>
+    </insert>
+
+
+    <select id="selectAnyInfo" resultType="java.lang.String">
+        SELECT
+               1
+        FROM
+               T_GW_LOC
+        LIMIT
+               1
+    </select>
+
+    <select id="createPerHourTable" parameterType="java.lang.String">
+         CREATE TABLE IF NOT EXISTS ${value}
+         (`seq` int(11) NOT NULL AUTO_INCREMENT COMMENT '순번',
+         `mdn` varchar(11) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '전화번호',
+         `gw_mac` varchar(17) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '게이트웨이 mac',
+         `rssi` double DEFAULT NULL COMMENT '수신된 신호 세기',
+         `dt` datetime DEFAULT NULL COMMENT 'dt',
+         `ins_dt` datetime DEFAULT NULL COMMENT 'db insert time',
+         PRIMARY KEY (`seq`) USING BTREE
+         )
+         ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='APP RAW DATA'
+    </select>
+
+</mapper>

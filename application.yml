@@ -1,0 +1,149 @@
+#----------------------------------------------------------------------
+# service-server 환경 설정 파일입니다.
+#
+# [주의사항]
+# 잘못된 환경 설정은 service-server 실행에 문제를 야기할 수 있습니다.
+#----------------------------------------------------------------------
+
+############################################################
+
+spring:
+  profiles:
+    #   active: prod
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+
+# -- NOT USED JPA (20.08.05)
+#  jpa:
+#    database-platform:
+#    generate-ddl: false
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        format_sql: true
+#        dialect: org.hibernate.dialect.MySQLDialect
+
+# log
+logging:
+  file:
+    name: service-server-gateway.log
+    path: /svc/logs/app/serviceserver
+  #  path: /Users/stranger/workspace/serviceServer/logs
+  level:
+    root: info
+
+# server Port
+
+
+# Device Using
+device:
+  using:
+    band: false
+    app: true
+
+  # management table
+  # -- NOT USED JPA (20.08.05)
+  #table:
+  #    target: T_APP_USERS_LOC,T_BAND_INFO
+  #    target: T_TEST_1,T_TEST_2
+  #    rename: false
+  #    drop: false
+  #    drop-day: 7
+mybatis:
+  configuration:
+    cache-enabled: false
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:sql/*.xml
+
+#url: jdbc:mysql://221.139.14.153:3306/controlCenter?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&allowMultiQueries=true
+#  username: digitalTwin
+#  password: digitalTwin@!
+
+############################################################
+--- #dev
+spring:
+  profiles: dev
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/IotDeviceInfo?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&allowMultiQueries=true
+    username: iotDevice
+    password: iotDevice!@
+
+#    redis:
+#      host: 127.0.0.1
+#      port: 9090
+#      password : openit
+#      lettuce:
+#        pool:
+#          max-active: 10
+#          max-idle: 10
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: oi79787!
+    #lettuce:
+    #  pool:
+    #    max-idle: 10
+    #    min-idle: 0
+    #    max-active: 10
+
+    #    hikari:
+    #      connection-test-query: SELECT 1
+    #      idle-timeout: 5
+    #      connection-timeout: 5
+    #      validation-timeout: 5
+    #      maximum-pool-size: 50
+
+
+mqtt:
+  port: 1883
+  host: 10.10.10.157
+  clientId: clientTest
+  username: openit
+  passwd: openit
+  topic: /openit/serviceserver/+/+
+  qos: 0
+  nwtype: tcp
+
+gateway:
+  commit:
+    count: 5000
+  thread:
+    count: 10
+    poolSize : 10 
+    maxPoolSize : 10
+    queueCapacity : 500
+  max:
+    waitTime: 30
+  schedule:
+    interval: 0/3 * * * * *
+#    interval: 0/10 * * * * *
+
+############################################################
+--- #prod
+spring:
+  profiles: prod
+
+  datasource:
+    basic:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://127.0.0.1:3306/IotDeviceInfo?autoReconnect=true&useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Seoul&allowMultiQueries=true
+      username: iotDevice
+      password: iotDevice!@
+#    hikari:
+#      connection-test-query: SELECT 1
+#      minimum-idle: 10
+#      maximun-idle: 10
+
+mqtt:
+  port: 1883
+  host: 10.10.10.157
+  clientId: clientTest
+  username: openit
+  passwd: openit
+  topic:
+  qos: 0
+  nwtype: tcp
